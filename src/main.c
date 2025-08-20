@@ -37,6 +37,7 @@ int main(void)
     #endif
 
     InitWindow(1024, 512, "Raylib Starter");
+    SetTargetFPS(60); // uncommend to see max FPS.
 
     printf("Screen Width: %d", GetScreenWidth());
     printf("Screen Height: %d", GetScreenHeight());
