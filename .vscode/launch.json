@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug raylib-starter",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/debug/raylib-starter",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "build raylib-starter (debug)",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "Launch raylib-starter (Release)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/raylib-starter",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "build raylib-starter"
+        }
+    ]
+}
