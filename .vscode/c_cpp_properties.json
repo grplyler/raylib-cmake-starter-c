@@ -6,6 +6,7 @@
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/vendor/raylib/src",
                 "${workspaceFolder}/vendor/raygui/src",
+                "${workspaceFolder}/vendor/rglayout/src",
                 "/usr/local/include",
                 "/opt/homebrew/include",
                 "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include",

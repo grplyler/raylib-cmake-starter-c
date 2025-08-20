@@ -2,7 +2,7 @@
 #include "raygui.h"
 
 #define RGLAYOUT_IMPLEMENTATION
-#include "rglayout.h"
+#include "../src/rglayout.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -31,8 +31,15 @@ int main(void)
     // Initialization
     //--------------------------------------------------------------------------------------
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(720, 480, "RayGUI Layout - 3Panel Demo");
-    SetTargetFPS(60);
+
+    #ifdef __APPLE__
+        SetConfigFlags(FLAG_WINDOW_HIGHDPI);
+    #endif
+
+    InitWindow(1024, 512, "Raylib Starter");
+
+    printf("Screen Width: %d", GetScreenWidth());
+    printf("Screen Height: %d", GetScreenHeight());
 
     // Load GUI style - try multiple possible paths
     GuiLoadStyle("vendor/raygui/styles/cyber/style_cyber.rgs");
@@ -41,7 +48,7 @@ int main(void)
     Color bg_color = GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR));
 
     // Layout Settings
-    RGLSetDefaultGap(10.0f);
+    RGLSetDefaultGap(5.0f);
     RGLSetDefaultPadAll(0.0f);
 
     // Main game loop
@@ -57,27 +64,80 @@ int main(void)
 
         float screen_w = (float)GetScreenWidth();
         float screen_h = (float)GetScreenHeight();
-        Rectangle panel = {0, 0, screen_w, screen_h};
+        Rectangle screen_rect = {0, 0, screen_w, screen_h};
 
-        // Toplevel Column: Header(50px), Content(stretch), Footer(50px)
+        // Toplevel Column: Header(50px), Content(stretch)
         RGLPlan column_plan = GuiPlanCreate((float[]){50, -1}, 2);
         GuiPlanSetPadAll(&column_plan, 10);
-        GuiBeginColumn(panel, &column_plan);
+        GuiBeginColumn(screen_rect, &column_plan);
 
-            // Header Row
-             DebugButton(GuiLayoutRec(-1, -1), "Header");
-
-            // Content Row with 3 columns: Left(flex 1), Center(flex 3), Right(flex 1)
-            RGLPlan content_plan = GuiPlanCreate((float[]){1, 3, 1}, 3);
-            GuiBeginRow(GuiLayoutRec(-1, -1), &content_plan);
-                DebugButton(GuiLayoutRec(-1, -1), "Left\nSidebar");      // Left Sidebar
-                DebugButton(GuiLayoutRec(-1, -1), "Main\nContent");      // Center Content
-                DebugButton(GuiLayoutRec(50, -1), "Right\nSidebar");;
+            // Headers
+            RGLPlan header_plan = GuiPlanCreate((float[]){1, 4}, 2);
+            GuiBeginRow(GuiLayoutRec(-1, -1), &header_plan);
+                DebugButton(GuiLayoutRec(-1, -1), "Logo");
+                DebugButton(GuiLayoutRec(-1, -1), "Header");
             GuiLayoutEnd();
 
+            RGLPlan content_plan = GuiPlanCreate((float[]){1, 3, 1}, 3);
+            GuiBeginRow(GuiLayoutRec(-1, -1), &content_plan);
+
+                // Left Sidebar
+                DebugButton(GuiLayoutRec(-1, -1), "Left\nSidebar");      // Left Sidebar
+
+                // Center Content
+                GuiBeginColumn(GuiLayoutRec(-1, -1), NULL);
+
+                    // Center 60px tall roolbar
+                    Rectangle tb_rect = GuiLayoutRec(60, -1);
+                    GuiBeginRow(tb_rect, NULL);
+                        DebugButton(GuiLayoutRec(-1, -1), "Toolbar");
+                    GuiLayoutEnd();
+
+                    // Nested Toolbar: resuse the same rect as toolbar wrapper
+                    RGLPlan toolbar_plan = GuiPlanCreate(NULL, 0);
+                    GuiPlanAdd(&toolbar_plan, -1); // Add a Flex Fill Item
+                    GuiPlanAddRepeat(&toolbar_plan, 40, 10); // Add 10 30px Items
+                    GuiPlanSetPadAll(&toolbar_plan, 10); // Add 5px Padding
+                    GuiBeginRow(tb_rect, &toolbar_plan);
+                        DebugButton(GuiLayoutRec(-1, -1), "Toolbar"); // Uses plan[0] which is flex
+
+                        // Add 10 Toolbar button 20px wide
+                        for (int i = 0; i < 10; i++)
+                        {
+                            DebugButton(GuiLayoutRec(-1, -1), TextFormat("%d", i)); // Uses plan[1..] which are fixed sizes
+                        }
+                    GuiLayoutEnd();
+
+                    // Main Content
+                    GuiBeginRow(GuiLayoutRec(-1, -1), NULL);
+                        RGLPlan main_plan = GuiPlanCreate((float[]){-1, 50}, 2);
+                        GuiBeginColumn(GuiLayoutRec(-1, -1), &main_plan);
+                            DebugButton(GuiLayoutRec(-1, -1), "Content");
+                            DebugButton(GuiLayoutRec(-1, -1), "Footer");
+                        GuiLayoutEnd();
+                    GuiLayoutEnd();
+
+
+                GuiLayoutEnd();
+
+                // Right Sidebar (Nested)
+                RGLPlan sidebar_plan = GuiPlanCreate((float[]){-1, 100, 50}, 3);
+                GuiPlanSetPadAll(&sidebar_plan, 10);
+                GuiBeginColumn(GuiLayoutRec(-1, -1), &sidebar_plan);
+                    DebugButton(GuiLayoutRecLast(), "Right Sidebar"); // Reuse the sidebar_rect but this time it has padding
+                    DebugButton(GuiLayoutRec(-1, -1), "Sidebar Nested");
+                    DebugButton(GuiLayoutRec(100, 100), "Custom Size"); // Note the main axis (first param) is set in plan
+                    DebugButton(GuiLayoutRec(-1, -1), "Right\n Nested Footer");
+                GuiLayoutEnd();
+
+            GuiLayoutEnd();
 
         GuiLayoutEnd(); // Toplevel Column
 
+        // Display FPS counter - draw after all GUI elements to ensure it's visible
+        char fps_text[32];
+        snprintf(fps_text, sizeof(fps_text), "FPS: %d", GetFPS());
+        DrawText(fps_text, 20, 20, 20, RAYWHITE);
 
         EndDrawing();
     }

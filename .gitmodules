@@ -10,3 +10,7 @@
 	path = vendor/rglayout
 	url = https://github.com/grplyler/rglayout
 	shallow = true
+[submodule "vendor/angle"]
+	path = vendor/angle
+	url = https://github.com/google/angle.git
+    shallow = true

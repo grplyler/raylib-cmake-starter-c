@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export DYLD_LIBRARY_PATH=libs/
+./build_angle/raylib-starter
