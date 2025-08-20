@@ -1,0 +1,12 @@
+[submodule "vendor/raylib"]
+	path = vendor/raylib
+	url = https://github.com/raysan5/raylib.git
+	shallow = true
+[submodule "vendor/raygui"]
+	path = vendor/raygui
+	url = https://github.com/raysan5/raygui.git
+	shallow = true
+[submodule "vendor/rglayout"]
+	path = vendor/rglayout
+	url = https://github.com/grplyler/rglayout
+	shallow = true
