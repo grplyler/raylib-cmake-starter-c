@@ -1,3 +1,4 @@
 #!/bin/bash
 
-./build/raylib-starter
+cd "$(dirname "$0")/build" || exit 1
+./raylib-starter

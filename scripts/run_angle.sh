@@ -1,4 +1,4 @@
 #!/bin/bash
 
-./build_angle/raylib-starter
+"$(dirname "$0")/run.sh"
 

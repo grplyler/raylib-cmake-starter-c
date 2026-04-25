@@ -10,29 +10,19 @@ It comes packaged with Raylib, RayGUI, and RGLayout for advanced GUI layouts.
 3. Build `./b`
 4. Run `./r`
 
-## Building with Google ANGLE (At least double the capable draw calls on Apple Silicone)
+## ANGLE Branch
 
-ANGLE (Almost Native Graphics Layer Engine) provides better performance on Apple Silicon and cross-platform OpenGL ES compatibility.
+This branch is configured to build with Google ANGLE by default.
+It links against precompiled ANGLE libraries from the platform-specific folder under `libs/` and does not support building ANGLE from source.
 
-### Using Pre-compiled ANGLE Libraries (Included)
-
-The project includes pre-compiled ANGLE libraries in the `libs/` directory for convenience.
-
-**Build with ANGLE:**
-```bash
-./ba  # Build with ANGLE
-./ra  # Run with ANGLE
-```
-
-### Building ANGLE from Source
-
-If you want to build ANGLE from source (requires ANGLE submodule):
+### Build And Run
 
 ```bash
-./bas  # Build with ANGLE from source
+./b
+./r
 ```
 
-### Using Your Own ANGLE Libraries (Optional)
+### Using Your Own ANGLE Libraries
 
 If you want to use different ANGLE libraries:
 
@@ -52,58 +42,43 @@ If you want to use different ANGLE libraries:
    # libEGL.dll
    ```
 
-2. **Replace the libraries in `libs/` directory:**
+2. **Replace the libraries in your platform directory under `libs/`:**
 
-   Copy your ANGLE libraries to the `libs/` folder, replacing the existing ones.
+   On macOS, copy your ANGLE libraries to `libs/macos/`, replacing the existing ones.
+   On Windows, use `libs/windows/`.
 
 ## Build Scripts
 
-- `./b` - Standard build using desktop OpenGL
-- `./ba` - Build with ANGLE using pre-compiled libraries
-- `./bas` - Build with ANGLE from source
-- `./r` - Run the standard build
-- `./ra` - Run the ANGLE build
+- `./b` - Build this branch with precompiled ANGLE libraries
+- `./r` - Run the ANGLE build
 
 ## CMake Configuration Options
 
-The project supports several CMake options:
+This branch does not expose a source-vs-precompiled ANGLE toggle.
+The default manual CMake configuration is:
 
-- `USE_ANGLE=OFF` - Use ANGLE for OpenGL ES support (default: OFF)
-- `ANGLE_PRECOMPILED=ON` - Use pre-compiled ANGLE libraries vs building from source (default: ON)
-
-Example manual CMake configuration:
 ```bash
-cmake -B build -DUSE_ANGLE=ON -DANGLE_PRECOMPILED=ON
+cmake -S . -B build
 cmake --build build
 ```
 
 ## Platform Support
 
-- **Windows**: ✅ Supported (both standard OpenGL and ANGLE)
-- **macOS**: ✅ Supported (both standard OpenGL and ANGLE)
-- **Linux**: ✅ Supported (standard OpenGL, ANGLE support untested)
+- **Windows**: Supported with precompiled ANGLE libraries
+- **macOS**: Supported with precompiled ANGLE libraries
+- **Linux**: Precompiled ANGLE workflow is untested
 
 ## Dependencies
 
 - [Raylib](https://www.raylib.com/) - Game development library
 - [RayGUI](https://github.com/raysan5/raygui) - Immediate mode GUI for Raylib
 - [RGLayout](https://github.com/your-repo/rglayout) - Advanced layout system for RayGUI
-- [ANGLE](https://chromium.googlesource.com/angle/angle) (Optional) - OpenGL ES implementation
+- [ANGLE](https://chromium.googlesource.com/angle/angle) - OpenGL ES implementation
 
 ## Features
 
 - Cross-platform C development with CMake
 - Advanced GUI layouts with RGLayout
-- Optional ANGLE support for better performance on Apple Silicon
+- ANGLE-enabled build for better performance on Apple Silicon
 - Automatic library detection and platform-specific linking
 - Hot-reload friendly development workflow
-
-## TODO
-
-- [x] Support for ANGLE on Windows and macOS
-- [x] Cross-platform CMake configuration
-- [x] Automatic ANGLE library detection
-- [x] Build script for ANGLE from source
-- [ ] Linux ANGLE support testing
-- [ ] Add ENet for Networking
-- [ ] Package management with vcpkg/Conan

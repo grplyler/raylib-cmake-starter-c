@@ -7,6 +7,26 @@
 #include <string.h>
 #include <stdio.h>
 
+static void LoadGuiStyle(void)
+{
+    const char *style_paths[] = {
+        "../vendor/raygui/styles/cyber/style_cyber.rgs",
+        "vendor/raygui/styles/cyber/style_cyber.rgs",
+    };
+
+    for (unsigned int index = 0; index < sizeof(style_paths) / sizeof(style_paths[0]); index++)
+    {
+        if (FileExists(style_paths[index]))
+        {
+            GuiLoadStyle(style_paths[index]);
+            TraceLog(LOG_INFO, "GUI: Loaded style from %s", style_paths[index]);
+            return;
+        }
+    }
+
+    TraceLog(LOG_WARNING, "GUI: Cyber style not found, using raygui default style");
+}
+
 // Helper function to draw debug buttons (similar to Odin's DebugButtonEx)
 static void DebugButton(Rectangle rect, const char* label) {
     // Draw button with distinctive colors for debugging layout
@@ -32,18 +52,17 @@ int main(void)
     //--------------------------------------------------------------------------------------
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
-    #ifdef __APPLE__
-        SetConfigFlags(FLAG_WINDOW_HIGHDPI);
-    #endif
+    // #if defined(__APPLE__) && !defined(GRAPHICS_API_OPENGL_ES3)
+    //     SetConfigFlags(FLAG_WINDOW_HIGHDPI);
+    // #endif
 
     InitWindow(1024, 512, "Raylib Starter");
     SetTargetFPS(60); // uncommend to see max FPS.
 
-    printf("Screen Width: %d", GetScreenWidth());
-    printf("Screen Height: %d", GetScreenHeight());
+    printf("Screen Width: %d\n", GetScreenWidth());
+    printf("Screen Height: %d\n", GetScreenHeight());
 
-    // Load GUI style - try multiple possible paths
-    GuiLoadStyle("vendor/raygui/styles/cyber/style_cyber.rgs");
+    LoadGuiStyle();
 
     // GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     Color bg_color = GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR));
